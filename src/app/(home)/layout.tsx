@@ -1,5 +1,5 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
-import DocumentsSidebar from "./documents-sidebar";
+import DocumentsSidebar from "./d/documents-sidebar";
 import { cookies } from "next/headers";
 
 export default async function DocumentsLayout({

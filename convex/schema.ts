@@ -15,4 +15,19 @@ export default defineSchema({
       searchField: "title",
       filterFields: ["ownerId", "organizationId"],
     }),
+
+  users: defineTable({
+    email: v.optional(v.string()),
+    name: v.optional(v.string()),
+    avatar: v.optional(v.string()),
+    syncStatus: v.optional(v.string()),
+    externalId: v.string(),
+    verifiedEmail: v.optional(v.boolean()),
+    givenName: v.optional(v.string()),
+    familyName: v.optional(v.string()),
+    pictureUrl: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    verifiedPhone: v.optional(v.boolean()),
+  }),
+  
 });

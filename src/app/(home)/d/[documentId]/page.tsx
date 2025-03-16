@@ -1,9 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
+import { session } from "@descope/nextjs-sdk/server";
 import { preloadQuery } from "convex/nextjs";
 
 import { Document } from "./document";
-import { Id } from "../../../../convex/_generated/dataModel";
-import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import { api } from "../../../../../convex/_generated/api";
 
 interface DocumentIdPageProps {
   params: Promise<{ documentId: Id<"documents"> }>;
@@ -12,8 +12,8 @@ interface DocumentIdPageProps {
 const DocumentIdPage = async ({ params }: DocumentIdPageProps) => {
   const { documentId } = await params;
 
-  const { getToken } = await auth();
-  const token = (await getToken({ template: "convex" })) ?? undefined;
+  const currSession = await session();
+  const token = currSession?.jwt;
 
   if (!token) {
     throw new Error("Unauthorized");

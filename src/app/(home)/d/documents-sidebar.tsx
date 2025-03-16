@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { usePaginatedQuery, useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import {
   SidebarProvider,
   Sidebar,
@@ -39,7 +39,7 @@ export default function DocumentsSidebar() {
     })
       .then((id) => {
         toast.success("Document created");
-        router.push(`/documents/${id}`);
+        router.push(`/d/${id}`);
       })
       .catch(() => toast.error("Failed to create document"));
   };
@@ -77,7 +77,7 @@ export default function DocumentsSidebar() {
                 documents.map((doc) => (
                   <SidebarMenuItem key={doc._id}>
                     <SidebarMenuButton
-                      onClick={() => router.push(`/documents/${doc._id}`)}
+                      onClick={() => router.push(`/d/${doc._id}`)}
                       className="w-full justify-start gap-2"
                       isActive={doc._id === currentDocumentId}
                     >

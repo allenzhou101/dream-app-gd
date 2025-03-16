@@ -7,8 +7,8 @@ import { useMutation } from "convex/react";
 import { useStatus } from "@liveblocks/react";
 import { useDebounce } from "@/hooks/use-debounce";
 
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { LoaderIcon } from "lucide-react";
 
@@ -56,14 +56,17 @@ export const DocumentInput = ({ title, id }: DocumentInputProps) => {
     debouncedUpdate(newValue);
   };
 
-  const showLoader = isPending || status === "connecting" || status === "reconnecting";
+  const showLoader =
+    isPending || status === "connecting" || status === "reconnecting";
   const showError = status === "disconnected";
 
   return (
     <div className="flex items-center gap-2">
       {isEditing ? (
         <form onSubmit={handleSubmit} className="relative w-fit max-w-[50ch]">
-          <span className="invisible whitespace-pre px-1.5 text-lg">{value || " "}</span>
+          <span className="invisible whitespace-pre px-1.5 text-lg">
+            {value || " "}
+          </span>
           <input
             ref={inputRef}
             value={value}
@@ -87,7 +90,9 @@ export const DocumentInput = ({ title, id }: DocumentInputProps) => {
       )}
       {showError && <BsCloudSlash className="size-4" />}
       {!showError && !showLoader && <BsCloudCheck className="size-4" />}
-      {showLoader && <LoaderIcon className="size-4 animate-spin text-muted-foreground" />}
+      {showLoader && (
+        <LoaderIcon className="size-4 animate-spin text-muted-foreground" />
+      )}
     </div>
   );
 };

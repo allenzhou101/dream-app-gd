@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://tidy-mackerel-24.clerk.accounts.dev",
+      domain: "https://api.descope.com/P2lu8UQxAakgfNmbF4Gbxg5xWHYM",
       applicationID: "convex"
     }
   ]

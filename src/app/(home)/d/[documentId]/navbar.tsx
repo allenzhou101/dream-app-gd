@@ -44,11 +44,10 @@ import { Avatars } from "./avatars";
 
 import { DocumentInput } from "./document-input";
 import { useEditorStore } from "@/store/use-editor-store";
-import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Inbox } from "./inbox";
-import { Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../../convex/_generated/dataModel";
 import { useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Toolbar } from "./toolbar";
@@ -75,7 +74,7 @@ export const Navbar = ({ data }: NavbarProps) => {
       .catch(() => toast.error("Something went wrong"))
       .then((id) => {
         toast.success("Document created");
-        router.push(`/documents/${id}`);
+        router.push(`/d/${id}`);
       });
   };
 

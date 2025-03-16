@@ -27,7 +27,7 @@ export const TemplatesGallery = () => {
       .catch(() => toast.error("Something went wrong"))
       .then((documentId) => {
         toast.success("Document created");
-        router.push(`documents/${documentId}`);
+        router.push(`d/${documentId}`);
       })
       .finally(() => {
         setIsCreating(false);
@@ -54,7 +54,9 @@ export const TemplatesGallery = () => {
                   <button
                     disabled={isCreating}
                     // TODO: Add proper initial content
-                    onClick={() => onTemplateClick(template.label, template.initialContent)}
+                    onClick={() =>
+                      onTemplateClick(template.label, template.initialContent)
+                    }
                     style={{
                       backgroundImage: `url(${template.imageUrl})`,
                       backgroundSize: "cover",
@@ -63,7 +65,9 @@ export const TemplatesGallery = () => {
                     }}
                     className="size-full hover:border-blue-500 rounded-sm border hover:bg-blue-50 transition flex flex-col items-center justify-center gap-y-4 bg-white"
                   />
-                  <p className="text-sm font-medium truncate">{template.label}</p>
+                  <p className="text-sm font-medium truncate">
+                    {template.label}
+                  </p>
                 </div>
               </CarouselItem>
             ))}

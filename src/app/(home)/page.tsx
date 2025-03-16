@@ -24,7 +24,7 @@ const Home = () => {
 
   useEffect(() => {
     if (results && results.length > 0) {
-      router.push(`/documents/${results[0]._id}`);
+      router.push(`/d/${results[0]._id}`);
     }
   }, [results, router]);
 

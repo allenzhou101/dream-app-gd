@@ -1,7 +1,7 @@
 import { Liveblocks } from "@liveblocks/node";
 import { ConvexHttpClient } from "convex/browser";
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { api } from "../../../../convex/_generated/api";
+import { session as descopeSession } from "@descope/nextjs-sdk/server";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 const liveblocks = new Liveblocks({
@@ -9,13 +9,18 @@ const liveblocks = new Liveblocks({
 });
 
 export async function POST(req: Request) {
-  const { sessionClaims } = await auth();
+  const currSession = await descopeSession();
 
-  if (!sessionClaims) {
+  if (!currSession) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const user = await currentUser();
+  const user = {
+    id: currSession.token.sub as string,
+    name: currSession.token.name ? currSession.token.name as string : "",
+    email: currSession.token.email,
+    avatar: currSession.token.pictureUrl,
+  }
 
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
@@ -28,16 +33,16 @@ export async function POST(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const isOwner = document.ownerId === user.id;
-  const isOrganizationMember = !!(
-    document.organizationId && document.organizationId === sessionClaims.org_id
-  );
+  // const isOwner = document.ownerId === user.id;
+  // const isOrganizationMember = !!(
+  //   document.organizationId && document.organizationId === sessionClaims.org_id
+  // );
 
-  if (!isOwner && !isOrganizationMember) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+  // if (!isOwner && !isOrganizationMember) {
+  //   return new Response("Unauthorized", { status: 401 });
+  // }
 
-  const name = user.fullName ?? user.primaryEmailAddress?.emailAddress ?? "Anonymous";
+  const name = user.name ?? user.email ?? "Anonymous";
   const nameToNumber = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const hue = Math.abs(nameToNumber) % 360
   const color = `hsl(${hue}, 80%, 60%)`;
@@ -45,7 +50,7 @@ export async function POST(req: Request) {
   const session = liveblocks.prepareSession(user.id, {
     userInfo: {
       name,
-      avatar: user.imageUrl,
+      avatar: user.avatar as string,
       color,
     },
   });
