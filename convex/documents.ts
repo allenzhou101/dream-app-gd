@@ -2,6 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 
 import { mutation, query } from "./_generated/server";
+import { prosemirrorSync } from "./prosemirror";
 
 export const getByIds = query({
   args: { ids: v.array(v.id("documents")) },
@@ -33,12 +34,16 @@ export const create = mutation({
 
     const organizationId = (user.organization_id ?? undefined) as string | undefined;
 
-    return ctx.db.insert("documents", {
-      title: args.title ?? "Untitled document",
+    const docId = await ctx.db.insert("documents", {
+      title: args.title ?? "Untitled",
       ownerId: user.subject,
       organizationId,
       initialContent: args.initialContent,
     });
+
+    await prosemirrorSync.create(ctx, docId, { type: "doc", content: [] });
+
+    return docId;
   },
 });
 

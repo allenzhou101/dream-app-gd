@@ -1,31 +1,7 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import { useEditor, AnyExtension, EditorContent } from "@tiptap/react";
 
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
-
-import Table from "@tiptap/extension-table";
-import TableCell from "@tiptap/extension-table-cell";
-import TableHeader from "@tiptap/extension-table-header";
-import TableRow from "@tiptap/extension-table-row";
-
-import Image from "@tiptap/extension-image";
-import ImageResize from "tiptap-extension-resize-image";
-
-import Underline from "@tiptap/extension-underline";
-import FontFamily from "@tiptap/extension-font-family";
-import TextStyle from "@tiptap/extension-text-style";
-
-import { Color } from "@tiptap/extension-color";
-import Highlight from "@tiptap/extension-highlight";
-
-import TextAlign from "@tiptap/extension-text-align";
-
-import Link from "@tiptap/extension-link";
-
-import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 import { useStorage } from "@liveblocks/react";
 
 import { useEditorStore } from "@/store/use-editor-store";
@@ -34,25 +10,43 @@ import { LineHeightExtension } from "@/extensions/line-height";
 import { Ruler } from "./ruler";
 import { Threads } from "./threads";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margins";
+import { useTiptapSync } from "@convex-dev/prosemirror-sync/tiptap";
+import { api } from "../../../../../convex/_generated/api";
 
+import { extensions } from "@/lib/extensions";
 interface EditorProps {
   initialContent?: string | undefined;
+  documentId: string;
 }
 
-export const Editor = ({ initialContent }: EditorProps) => {
+export function Editor({ initialContent, documentId }: EditorProps) {
+  const sync = useTiptapSync(api.prosemirror, documentId);
+
+  if (!sync || sync.isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (sync.initialContent === null || sync.extension === null) {
+    return (
+      <button onClick={() => sync.create({ type: "doc", content: [] })}>
+        Create document
+      </button>
+    );
+  }
+
+  return <EditorBody sync={sync} />;
+}
+
+function EditorBody({ sync }: { sync: ReturnType<typeof useTiptapSync> }) {
   const leftMargin =
     useStorage((root) => root.leftMargin) ?? LEFT_MARGIN_DEFAULT;
   const rightMargin =
     useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN_DEFAULT;
-
-  const liveblocks = useLiveblocksExtension({
-    initialContent,
-    offlineSupport_experimental: true,
-  });
   const { setEditor } = useEditorStore();
 
   const editor = useEditor({
-    immediatelyRender: false,
+    content: sync.initialContent,
+    immediatelyRender: true,
     onCreate({ editor }) {
       setEditor(editor);
     },
@@ -84,41 +78,12 @@ export const Editor = ({ initialContent }: EditorProps) => {
           "focus:outline-none print:boder-0 border bg-white border-editor-border flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text",
       },
     },
-    extensions: [
-      liveblocks,
-      StarterKit.configure({
-        history: false,
-      }),
-      Table,
-      TableCell,
-      TableHeader,
-      TableRow,
-      TaskList,
-      Image,
-      ImageResize,
-      Underline,
-      FontFamily,
-      TextStyle,
-      Color,
-      LineHeightExtension.configure({
-        types: ["heading", "paragraph"],
-        defaultLineHeight: "1.5",
-      }),
-      FontSizeExtensions,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        defaultProtocol: "https",
-      }),
-      Highlight.configure({
-        multicolor: true,
-      }),
-      TaskItem.configure({ nested: true }),
-    ],
+    extensions: [sync.extension as AnyExtension, ...extensions],
   });
+
+  if (!editor) {
+    return null;
+  }
 
   return (
     <div className="size-full overflow-x-auto bg-editor-bg px-4 print:p-0 print:bg-white print:overflow-visible">
@@ -129,4 +94,4 @@ export const Editor = ({ initialContent }: EditorProps) => {
       </div>
     </div>
   );
-};
+}

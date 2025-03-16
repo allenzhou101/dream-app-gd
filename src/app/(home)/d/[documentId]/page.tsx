@@ -24,6 +24,7 @@ const DocumentIdPage = async ({ params }: DocumentIdPageProps) => {
     { id: documentId },
     { token }
   );
+  console.log("preloadedDocument", preloadedDocument);
 
   return <Document preloadedDocument={preloadedDocument} />;
 };

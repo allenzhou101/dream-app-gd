@@ -4,17 +4,10 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { Descope } from "@descope/nextjs-sdk";
-import { useSession } from "@descope/nextjs-sdk/client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-function Auth({
-  provider,
-  noPadding,
-}: {
-  provider: string | null;
-  noPadding?: boolean;
-}) {
+function Auth() {
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
   return (
@@ -43,7 +36,6 @@ function Auth({
             console.log("Descope is ready");
             setIsReady(true);
           }}
-          form={{ provider: provider ?? "" }}
           onSuccess={(e: any) => {
             router.push("/");
           }}

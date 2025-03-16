@@ -12,12 +12,16 @@ import {
   ConvexProviderWithAuth,
 } from "convex/react";
 import useAuthFromDescope from "@/hooks/use-auth-from-descope";
+import { useStoreUserEffect } from "@/hooks/use-store-user-effect";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
+  if (!process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID) {
+    throw new Error("NEXT_PUBLIC_DESCOPE_PROJECT_ID is not set");
+  }
   return (
-    <AuthProvider projectId={process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID!}>
+    <AuthProvider projectId={process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID}>
       <ConvexProviderWithAuth client={convex} useAuth={useAuthFromDescope}>
         <Authenticated>{children}</Authenticated>
         <Unauthenticated>
@@ -34,6 +38,29 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
     </AuthProvider>
   );
 }
+
+// function Authenticated({ children }: { children: ReactNode }) {
+//   const { isAuthenticated, isLoading } = useStoreUserEffect();
+//   if (!isAuthenticated || isLoading) return null;
+//   return children;
+// }
+
+// function Unauthenticated({ children }: { children: ReactNode }) {
+//   const { isAuthenticated, isLoading } = useStoreUserEffect();
+//   if (isAuthenticated || isLoading) return null;
+//   return children;
+// }
+
+// function AuthLoading({ children }: { children: ReactNode }) {
+//   const { isLoading } = useStoreUserEffect();
+//   if (!isLoading) return null;
+//   return children;
+// }
+
+// function UseStoreUser({ children }: { children: ReactNode }) {
+//   const { isAuthenticated } = useStoreUserEffect();
+//   return children;
+// }
 
 // export function ConvexClientProvider({ children }: { children: ReactNode }) {
 //   return (
