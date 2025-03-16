@@ -40,8 +40,10 @@ interface EditorProps {
 }
 
 export const Editor = ({ initialContent }: EditorProps) => {
-  const leftMargin = useStorage((root) => root.leftMargin) ?? LEFT_MARGIN_DEFAULT;
-  const rightMargin = useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN_DEFAULT;
+  const leftMargin =
+    useStorage((root) => root.leftMargin) ?? LEFT_MARGIN_DEFAULT;
+  const rightMargin =
+    useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN_DEFAULT;
 
   const liveblocks = useLiveblocksExtension({
     initialContent,
