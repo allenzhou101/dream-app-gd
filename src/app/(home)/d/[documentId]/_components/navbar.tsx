@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 // icons
@@ -40,14 +39,14 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import { Avatars } from "./avatars";
+// import { Avatars } from "./avatars";
 
 import { DocumentInput } from "./document-input";
 import { useEditorStore } from "@/store/use-editor-store";
-import { Inbox } from "./inbox";
-import { Doc } from "../../../../../convex/_generated/dataModel";
+// import { Inbox } from "./inbox";
+import { Doc } from "../../../../../../convex/_generated/dataModel";
 import { useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "../../../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Toolbar } from "./toolbar";

@@ -7,8 +7,8 @@ import { useMutation } from "convex/react";
 import { useStatus } from "@liveblocks/react";
 import { useDebounce } from "@/hooks/use-debounce";
 
-import { api } from "../../../../../convex/_generated/api";
-import { Id } from "../../../../../convex/_generated/dataModel";
+import { api } from "../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { LoaderIcon } from "lucide-react";
 

@@ -5,13 +5,11 @@ import { useEditor, AnyExtension, EditorContent } from "@tiptap/react";
 import { useStorage } from "@liveblocks/react";
 
 import { useEditorStore } from "@/store/use-editor-store";
-import { FontSizeExtensions } from "@/extensions/font-size";
-import { LineHeightExtension } from "@/extensions/line-height";
 import { Ruler } from "./ruler";
 import { Threads } from "./threads";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margins";
 import { useTiptapSync } from "@convex-dev/prosemirror-sync/tiptap";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "../../../../../../convex/_generated/api";
 
 import { extensions } from "@/lib/extensions";
 interface EditorProps {
@@ -19,7 +17,7 @@ interface EditorProps {
   documentId: string;
 }
 
-export function Editor({ initialContent, documentId }: EditorProps) {
+export function Editor({ documentId }: EditorProps) {
   const sync = useTiptapSync(api.prosemirror, documentId);
 
   if (!sync || sync.isLoading) {

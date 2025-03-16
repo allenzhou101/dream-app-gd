@@ -1,6 +1,6 @@
 import { LoaderIcon } from "lucide-react";
 import { PaginationStatus } from "convex/react";
-import { Doc } from "../../../convex/_generated/dataModel";
+import { Doc } from "../../../../convex/_generated/dataModel";
 import {
   Table,
   TableBody,
@@ -18,7 +18,11 @@ interface DocumentsTableProps {
   status: PaginationStatus;
 }
 
-export const DocumentsTable = ({ documents, loadMore, status }: DocumentsTableProps) => {
+export const DocumentsTable = ({
+  documents,
+  loadMore,
+  status,
+}: DocumentsTableProps) => {
   return (
     <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-5">
       {documents === undefined ? (
@@ -38,7 +42,10 @@ export const DocumentsTable = ({ documents, loadMore, status }: DocumentsTablePr
           {documents.length === 0 ? (
             <TableBody>
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={4} className="h-24 text-muted-foreground text-center">
+                <TableCell
+                  colSpan={4}
+                  className="h-24 text-muted-foreground text-center"
+                >
                   No documents found
                 </TableCell>
               </TableRow>

@@ -23,17 +23,19 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
   return (
     <AuthProvider projectId={process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID}>
       <ConvexProviderWithAuth client={convex} useAuth={useAuthFromDescope}>
-        <Authenticated>{children}</Authenticated>
-        <Unauthenticated>
-          <div className="flex flex-col items-center justify-center min-h-screen">
-            {/* <SignIn routing="hash" /> */}
-            unauthorized
-            <SignUpOrInFlow />
-          </div>
-        </Unauthenticated>
-        <AuthLoading>
-          <FullscreenLoader label="Auth loading..." />
-        </AuthLoading>
+        <UseStoreUser>
+          <Authenticated>{children}</Authenticated>
+          <Unauthenticated>
+            <div className="flex flex-col items-center justify-center min-h-screen">
+              {/* <SignIn routing="hash" /> */}
+              unauthorized
+              <SignUpOrInFlow />
+            </div>
+          </Unauthenticated>
+          <AuthLoading>
+            <FullscreenLoader label="Auth loading..." />
+          </AuthLoading>
+        </UseStoreUser>
       </ConvexProviderWithAuth>
     </AuthProvider>
   );
@@ -57,10 +59,11 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
 //   return children;
 // }
 
-// function UseStoreUser({ children }: { children: ReactNode }) {
-//   const { isAuthenticated } = useStoreUserEffect();
-//   return children;
-// }
+function UseStoreUser({ children }: { children: ReactNode }) {
+  const { isAuthenticated } = useStoreUserEffect();
+  console.log(isAuthenticated);
+  return children;
+}
 
 // export function ConvexClientProvider({ children }: { children: ReactNode }) {
 //   return (

@@ -1,9 +1,9 @@
 import { session } from "@descope/nextjs-sdk/server";
 import { preloadQuery } from "convex/nextjs";
 
-import { Document } from "./document";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../convex/_generated/api";
+import { Document } from "./_components/document";
 
 interface DocumentIdPageProps {
   params: Promise<{ documentId: Id<"documents"> }>;

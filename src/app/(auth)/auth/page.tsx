@@ -36,10 +36,10 @@ function Auth() {
             console.log("Descope is ready");
             setIsReady(true);
           }}
-          onSuccess={(e: any) => {
+          onSuccess={() => {
             router.push("/");
           }}
-          onError={(e: any) => console.log("Could not log in!", e)}
+          // onError={(e: any) => console.log("Could not log in!", e)}
           // redirectAfterSuccess="/"
           // redirectAfterError="/error-page"
         />
