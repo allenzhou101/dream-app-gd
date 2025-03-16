@@ -52,6 +52,8 @@ import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Toolbar } from "./toolbar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface NavbarProps {
   data: Doc<"documents">;
@@ -60,6 +62,7 @@ interface NavbarProps {
 export const Navbar = ({ data }: NavbarProps) => {
   const router = useRouter();
   const { editor } = useEditorStore();
+  const { state } = useSidebar();
 
   const mutation = useMutation(api.documents.create);
   const onNewDocument = () => {
@@ -123,6 +126,7 @@ export const Navbar = ({ data }: NavbarProps) => {
   return (
     <nav className="flex flex-col items-start justify-between px-4 py-2 bg-editor-bg border-b-[0.5px]">
       <div className="flex gap-1 items-center">
+        {state === "collapsed" && <SidebarTrigger />}
         <Link href="/">
           {/* <Image src={"/logo.svg"} alt="logo" width={36} height={36} /> */}
           <FileText className="size-6" />
