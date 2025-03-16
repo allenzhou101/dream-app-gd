@@ -11,6 +11,7 @@ import {
   FileJsonIcon,
   FilePenIcon,
   FilePlusIcon,
+  FileText,
   FileTextIcon,
   GlobeIcon,
   ItalicIcon,
@@ -120,13 +121,13 @@ export const Navbar = ({ data }: NavbarProps) => {
   };
 
   return (
-    // try a lighter bg color
-    <nav className="flex flex-col items-start justify-between bg-[#fff] px-4 py-2 border border-editor-border shadow-xs rounded-sm">
-      <div className="flex gap-2 items-center">
+    <nav className="flex flex-col items-start justify-between px-4 py-2 bg-editor-bg border-b-[0.5px]">
+      <div className="flex gap-1 items-center">
         <Link href="/">
-          <Image src={"/logo.svg"} alt="logo" width={36} height={36} />
+          {/* <Image src={"/logo.svg"} alt="logo" width={36} height={36} /> */}
+          <FileText className="size-6" />
         </Link>
-        <div className="flex flex-col">
+        <div className="flex flex-row gap-8">
           <DocumentInput title={data.title} id={data._id} />
           <div className="flex">
             <Menubar className="border-none bg-transparent shadow-none h-auto p-0">
