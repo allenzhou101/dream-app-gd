@@ -27,8 +27,6 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
           <Authenticated>{children}</Authenticated>
           <Unauthenticated>
             <div className="flex flex-col items-center justify-center min-h-screen">
-              {/* <SignIn routing="hash" /> */}
-              unauthorized
               <SignUpOrInFlow />
             </div>
           </Unauthenticated>
@@ -41,46 +39,8 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// function Authenticated({ children }: { children: ReactNode }) {
-//   const { isAuthenticated, isLoading } = useStoreUserEffect();
-//   if (!isAuthenticated || isLoading) return null;
-//   return children;
-// }
-
-// function Unauthenticated({ children }: { children: ReactNode }) {
-//   const { isAuthenticated, isLoading } = useStoreUserEffect();
-//   if (isAuthenticated || isLoading) return null;
-//   return children;
-// }
-
-// function AuthLoading({ children }: { children: ReactNode }) {
-//   const { isLoading } = useStoreUserEffect();
-//   if (!isLoading) return null;
-//   return children;
-// }
-
 function UseStoreUser({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useStoreUserEffect();
   console.log(isAuthenticated);
   return children;
 }
-
-// export function ConvexClientProvider({ children }: { children: ReactNode }) {
-//   return (
-//     <ClerkProvider
-//       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-//     >
-//       <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
-//         <Authenticated>{children}</Authenticated>
-//         <Unauthenticated>
-//           <div className="flex flex-col items-center justify-center min-h-screen">
-//             <SignIn routing="hash" />
-//           </div>
-//         </Unauthenticated>
-//         <AuthLoading>
-//           <FullscreenLoader label="Auth loading..." />
-//         </AuthLoading>
-//       </ConvexProviderWithClerk>
-//     </ClerkProvider>
-//   );
-// }

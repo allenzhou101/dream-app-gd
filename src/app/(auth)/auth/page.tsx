@@ -4,12 +4,20 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { Descope } from "@descope/nextjs-sdk";
+import { useSession } from "@descope/nextjs-sdk/client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Auth() {
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+  const { isAuthenticated, isSessionLoading } = useSession();
+
+  useEffect(() => {
+    if (!isSessionLoading && isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated, isSessionLoading]);
   return (
     <div className="w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] h-full flex items-center justify-center">
       <div
