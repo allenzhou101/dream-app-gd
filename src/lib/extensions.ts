@@ -20,36 +20,45 @@ import { Color } from "@tiptap/extension-color";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
+import TextStyle from "@tiptap/extension-text-style";
+import ImageResize from "tiptap-extension-resize-image";
 
+import { FontSizeExtensions } from "../extensions/font-size";
+import { LineHeightExtension } from "../extensions/line-height";
 
 export const extensions = [
-  StarterKit,
-  // Typography,
-  Underline,
-  TextAlign.configure({
-    types: ["heading", "paragraph"],
-  }),
-  TaskList,
-  TaskItem.configure({
-    nested: true,
-  }),
-  Table.configure({
-    resizable: true,
-  }),
-  TableRow,
-  TableHeader,
-  TableCell,
-  // Subscript,
-  // Superscript,
   Placeholder.configure({
     placeholder: "Start writing...",
   }),
-  Highlight,
-  FontFamily,
+  StarterKit.configure({
+    history: false,
+  }),
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+  TaskList,
   Image,
-  Link,
-
-  // Focus,
+  ImageResize,
+  Underline,
+  FontFamily,
+  TextStyle,
   Color,
-  // CharacterCount,
+  LineHeightExtension.configure({
+    types: ["heading", "paragraph"],
+    defaultLineHeight: "1.5",
+  }),
+  FontSizeExtensions,
+  TextAlign.configure({
+    types: ["heading", "paragraph"],
+  }),
+  Link.configure({
+    openOnClick: false,
+    autolink: true,
+    defaultProtocol: "https",
+  }),
+  Highlight.configure({
+    multicolor: true,
+  }),
+  TaskItem.configure({ nested: true }),
 ];

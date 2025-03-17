@@ -29,7 +29,7 @@ export const {
     // save a text version of the document for text search, or generate
     // embeddings for vector search.
     const snapshotJSON = JSON.parse(snapshot);
-    let schema: Schema = getSchema(extensions);
+    const schema: Schema = getSchema(extensions);
     const node = schema.nodeFromJSON(snapshotJSON);
     const content = node.textContent;
     await ctx.scheduler.runAfter(0, internal.prosemirror.updateDocSearchIndex, {
