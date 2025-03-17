@@ -25,7 +25,7 @@ export const getByIds = query({
 
 export const create = mutation({
   args: { title: v.optional(v.string()), initialContent: v.optional(v.string()) },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { initialContent, title }) => {
     const user = await ctx.auth.getUserIdentity();
 
     if (!user) {
@@ -35,13 +35,16 @@ export const create = mutation({
     const organizationId = (user.organization_id ?? undefined) as string | undefined;
 
     const docId = await ctx.db.insert("documents", {
-      title: args.title ?? "Untitled",
+      title: title ?? "Untitled",
       ownerId: user.subject,
       organizationId,
-      initialContent: args.initialContent,
+      initialContent,
+      content: initialContent
     });
 
-    await prosemirrorSync.create(ctx, docId, { type: "doc", content: [] });
+    const proseMirrorInitialContent = initialContent ? [{"type":"codeBlock","attrs":{"language":"javascript"},"content":[{"type":"text","text":"👋 Welcome to Dream!"}]}] : []
+
+    await prosemirrorSync.create(ctx, docId, { type: "doc", content: proseMirrorInitialContent });
 
     return docId;
   },
