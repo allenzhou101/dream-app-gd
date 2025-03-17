@@ -1,21 +1,46 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { FaCaretDown } from "react-icons/fa";
-import { useStorage, useMutation } from "@liveblocks/react";
-
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../convex/_generated/dataModel";
 import { RIGHT_MARGIN_DEFAULT, LEFT_MARGIN_DEFAULT } from "@/constants/margins";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const markers = Array.from({ length: 83 }, (_, i) => i);
 
-export const Ruler = () => {
-  const leftMargin = useStorage((root) => root.leftMargin) ?? LEFT_MARGIN_DEFAULT;
-  const setLeftMargin = useMutation(({ storage }, position: number) => {
-    storage.set("leftMargin", position);
-  }, []);
+interface RulerProps {
+  documentId: Id<"documents">;
+}
 
-  const rightMargin = useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN_DEFAULT;
-  const setRightMargin = useMutation(({ storage }, position: number) => {
-    storage.set("rightMargin", position);
-  }, []);
+export const Ruler = ({ documentId }: RulerProps) => {
+  const document = useQuery(api.documents.getById, { id: documentId });
+  const updateMargins = useMutation(api.documents.updateMargins);
+
+  const [localLeftMargin, setLocalLeftMargin] = useState(
+    document?.leftMargin ?? LEFT_MARGIN_DEFAULT
+  );
+  const [localRightMargin, setLocalRightMargin] = useState(
+    document?.rightMargin ?? RIGHT_MARGIN_DEFAULT
+  );
+
+  // Update local state when document changes
+  useEffect(() => {
+    if (document) {
+      setLocalLeftMargin(document.leftMargin ?? LEFT_MARGIN_DEFAULT);
+      setLocalRightMargin(document.rightMargin ?? RIGHT_MARGIN_DEFAULT);
+    }
+  }, [document]);
+
+  // Debounced server update
+  const debouncedUpdateMargins = useDebounce(
+    useCallback(
+      (leftMargin?: number, rightMargin?: number) => {
+        updateMargins({ id: documentId, leftMargin, rightMargin });
+      },
+      [documentId, updateMargins]
+    ),
+    500
+  );
 
   const [isDraggingLeft, setIsDraggingLeft] = useState(false);
   const [isDraggingRight, setIsDraggingRight] = useState(false);
@@ -41,14 +66,20 @@ export const Ruler = () => {
         const rawPosition = Math.max(0, Math.min(PAGE_WIDTH, relativeX));
 
         if (isDraggingLeft) {
-          const maxLeftPosition = PAGE_WIDTH - rightMargin - MINIMUM_SPACE;
+          const maxLeftPosition = PAGE_WIDTH - localRightMargin - MINIMUM_SPACE;
           const newLeftPosition = Math.min(rawPosition, maxLeftPosition);
-          setLeftMargin(newLeftPosition);
+          setLocalLeftMargin(newLeftPosition);
+          debouncedUpdateMargins(newLeftPosition);
         } else if (isDraggingRight) {
-          const maxRightPosition = PAGE_WIDTH - (leftMargin + MINIMUM_SPACE);
+          const maxRightPosition =
+            PAGE_WIDTH - (localLeftMargin + MINIMUM_SPACE);
           const newRightPosition = Math.max(PAGE_WIDTH - rawPosition, 0);
-          const constrainedRightPosition = Math.min(newRightPosition, maxRightPosition);
-          setRightMargin(constrainedRightPosition);
+          const constrainedRightPosition = Math.min(
+            newRightPosition,
+            maxRightPosition
+          );
+          setLocalRightMargin(constrainedRightPosition);
+          debouncedUpdateMargins(undefined, constrainedRightPosition);
         }
       }
     }
@@ -57,6 +88,8 @@ export const Ruler = () => {
   const handleMouseUp = () => {
     setIsDraggingLeft(false);
     setIsDraggingRight(false);
+    // Ensure final position is saved
+    debouncedUpdateMargins(localLeftMargin, localRightMargin);
   };
 
   return (
@@ -69,14 +102,14 @@ export const Ruler = () => {
     >
       <div id="ruler-container" className="w-full h-full relative">
         <Marker
-          position={leftMargin}
+          position={localLeftMargin}
           isLeft={true}
           isDragging={isDraggingLeft}
           onMouseDown={handleLeftMouseDown}
           onDoubleClick={handleLeftMouseDown}
         />
         <Marker
-          position={rightMargin}
+          position={localRightMargin}
           isLeft={false}
           isDragging={isDraggingRight}
           onMouseDown={handleRightMouseDown}
@@ -88,7 +121,11 @@ export const Ruler = () => {
               const position = (marker * 816) / 82;
 
               return (
-                <div key={marker} className="absolute bottom-0" style={{ left: `${position}px` }}>
+                <div
+                  key={marker}
+                  className="absolute bottom-0"
+                  style={{ left: `${position}px` }}
+                >
                   {marker % 10 === 0 && (
                     <>
                       <div className="absolute bottom-0 w-[1px] h-2 bg-neutral-500" />
@@ -121,7 +158,13 @@ interface MarkerProps {
   onDoubleClick: () => void;
 }
 
-const Marker = ({ position, isLeft, isDragging, onMouseDown, onDoubleClick }: MarkerProps) => {
+const Marker = ({
+  position,
+  isLeft,
+  isDragging,
+  onMouseDown,
+  onDoubleClick,
+}: MarkerProps) => {
   return (
     <div
       className="absolute top-0 w-4 h-full cursor-ew-resize z-[5] group -ml-2"

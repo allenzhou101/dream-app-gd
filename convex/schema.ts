@@ -10,6 +10,8 @@ export default defineSchema({
     organizationId: v.optional(v.string()),
     docId: v.optional(v.string()),
     content: v.optional(v.string()),
+    leftMargin: v.optional(v.number()),
+    rightMargin: v.optional(v.number()),
   })
     .index("by_owner_id", ["ownerId"])
     .index("by_organization_id", ["organizationId"])

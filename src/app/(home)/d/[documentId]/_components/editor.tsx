@@ -1,45 +1,32 @@
 "use client";
 
 import { useEditor, AnyExtension, EditorContent } from "@tiptap/react";
-
-import { useStorage } from "@liveblocks/react";
-
 import { useEditorStore } from "@/store/use-editor-store";
 import { Ruler } from "./ruler";
 import { Threads } from "./threads";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margins";
 import { useTiptapSync } from "@convex-dev/prosemirror-sync/tiptap";
 import { api } from "../../../../../../convex/_generated/api";
+import { useQuery } from "convex/react";
+import { Id } from "../../../../../../convex/_generated/dataModel";
 
 import { extensions } from "@/lib/extensions";
+
 interface EditorProps {
   initialContent?: string | undefined;
-  documentId: string;
+  documentId: Id<"documents">;
 }
 
-export function Editor({ documentId }: EditorProps) {
-  const sync = useTiptapSync(api.prosemirror, documentId);
-
-  if (!sync || sync.isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (sync.initialContent === null || sync.extension === null) {
-    return (
-      <button onClick={() => sync.create({ type: "doc", content: [] })}>
-        Create document
-      </button>
-    );
-  }
-
-  return <EditorBody sync={sync} />;
-}
-
-function EditorBody({ sync }: { sync: ReturnType<typeof useTiptapSync> }) {
-  const leftMargin =
-    useStorage((root) => root.leftMargin) ?? LEFT_MARGIN_DEFAULT;
-  const rightMargin =
-    useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN_DEFAULT;
+function EditorBody({
+  sync,
+  documentId,
+}: {
+  sync: ReturnType<typeof useTiptapSync>;
+  documentId: Id<"documents">;
+}) {
+  const document = useQuery(api.documents.getById, { id: documentId });
+  const leftMargin = document?.leftMargin ?? LEFT_MARGIN_DEFAULT;
+  const rightMargin = document?.rightMargin ?? RIGHT_MARGIN_DEFAULT;
   const { setEditor } = useEditorStore();
 
   const editor = useEditor({
@@ -85,11 +72,21 @@ function EditorBody({ sync }: { sync: ReturnType<typeof useTiptapSync> }) {
 
   return (
     <div className="size-full overflow-x-auto bg-editor-bg px-4 print:p-0 print:bg-white print:overflow-visible">
-      <Ruler />
+      <Ruler documentId={documentId} />
       <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
         <EditorContent editor={editor} />
         <Threads editor={editor} />
       </div>
     </div>
   );
+}
+
+export function Editor({ documentId }: EditorProps) {
+  const sync = useTiptapSync(api.prosemirror, documentId);
+
+  if (sync.isLoading) {
+    return null;
+  }
+
+  return <EditorBody sync={sync} documentId={documentId} />;
 }
