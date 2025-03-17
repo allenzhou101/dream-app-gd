@@ -17,7 +17,7 @@ function Auth() {
     if (!isSessionLoading && isAuthenticated) {
       router.push("/");
     }
-  }, [isAuthenticated, isSessionLoading]);
+  }, [isAuthenticated, isSessionLoading, router]);
   return (
     <div className="w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] h-full flex items-center justify-center">
       <div
