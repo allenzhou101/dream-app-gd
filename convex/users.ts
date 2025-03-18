@@ -92,7 +92,7 @@ export const store = mutation({
       }
       return user._id;
     }
-    return await ctx.db.insert("users", {
+    const newUserId = await ctx.db.insert("users", {
       name: identity.name ?? "Anonymous",
       email: identity.email,
       // verifiedEmail: identity.verifiedEmail,
@@ -103,6 +103,13 @@ export const store = mutation({
       // phone: identity.phone,
       // verifiedPhone: identity.verifiedPhone,
     });
+    
+    await ctx.runMutation(api.documents.create, {
+      title: "Getting started",
+      initialContent: "👋 Welcome to Dream!",
+    })
+
+    return newUserId
   },
 });
 

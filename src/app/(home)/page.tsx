@@ -1,7 +1,7 @@
 "use client";
 
-import { useMutation, usePaginatedQuery } from "convex/react";
-import { useEffect, useRef } from "react";
+import { usePaginatedQuery } from "convex/react";
+import { useEffect } from "react";
 
 // import { Navbar } from "./navbar";
 // import { TemplatesGallery } from "./templates-gallery";
@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 
 const Home = () => {
   const router = useRouter();
-  const hasAttemptedCreate = useRef(false);
 
   const [search] = useSearchParam();
 
@@ -23,31 +22,12 @@ const Home = () => {
     { initialNumItems: 5 }
   );
 
-  const create = useMutation(api.documents.create);
-
   useEffect(() => {
-    const createGettingStartedDoc = async () => {
-      if (hasAttemptedCreate.current) return;
-
-      // Check if a getting started document already exists
-      const hasGettingStarted = results?.some(
-        (doc) => doc.title === "Getting Started"
-      );
-      if (!hasGettingStarted) {
-        hasAttemptedCreate.current = true;
-        await create({
-          title: "Getting started",
-          initialContent: "👋 Welcome to Dream!",
-        });
-      }
-    };
     if (results && results.length > 0) {
       router.push(`/d/${results[0]._id}`);
-    } else if (results && results.length === 0) {
-      createGettingStartedDoc();
     }
     // if no documents, create one with getting started
-  }, [create, results, router]);
+  }, [results, router]);
 
   // Show loading state while redirecting
   if (status === "LoadingFirstPage") {

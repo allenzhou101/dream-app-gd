@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { usePaginatedQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +21,8 @@ import {
   Loader2,
   LogOut,
   ChevronDown,
-  User,
+  MoreVertical,
+  Trash,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
@@ -40,6 +42,7 @@ export default function DocumentsSidebar() {
   const currentDocumentId = params.documentId as string;
   const { logout } = useDescope();
   const { user } = useUser();
+  const removeDocument = useMutation(api.documents.removeById);
 
   const {
     results: documents,
@@ -67,6 +70,18 @@ export default function DocumentsSidebar() {
       router.push("/auth");
     } catch {
       toast.error("Failed to logout");
+    }
+  };
+
+  const handleDeleteDocument = async (documentId: Id<"documents">) => {
+    try {
+      await removeDocument({ id: documentId });
+      toast.success("Document deleted");
+      if (documentId === currentDocumentId) {
+        router.push("/");
+      }
+    } catch {
+      toast.error("Failed to delete document");
     }
   };
 
@@ -122,14 +137,34 @@ export default function DocumentsSidebar() {
               ) : (
                 documents.map((doc) => (
                   <SidebarMenuItem key={doc._id}>
-                    <SidebarMenuButton
-                      onClick={() => router.push(`/d/${doc._id}`)}
-                      className="w-full justify-start gap-2"
-                      isActive={doc._id === currentDocumentId}
-                    >
-                      <FileText className="h-4 w-4" />
-                      {doc.title}
-                    </SidebarMenuButton>
+                    <div className="flex items-center w-full">
+                      <div className="flex-1">
+                        <SidebarMenuButton
+                          onClick={() => router.push(`/d/${doc._id}`)}
+                          className="w-full justify-start gap-2"
+                          isActive={doc._id === currentDocumentId}
+                        >
+                          <FileText className="h-4 w-4" />
+                          {doc.title}
+                        </SidebarMenuButton>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="p-1 hover:bg-accent rounded-md">
+                            <MoreVertical className="h-4 w-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteDocument(doc._id)}
+                            className="cursor-pointer text-destructive focus:text-destructive"
+                          >
+                            <Trash className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </SidebarMenuItem>
                 ))
               )}
