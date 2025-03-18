@@ -5,6 +5,7 @@ import { Room } from "./room";
 import { Editor } from "./editor";
 import { Navbar } from "./navbar";
 import { api } from "../../../../../../convex/_generated/api";
+import { SavingStatusProvider } from "@/providers/saving-status-provider";
 
 interface DocumentProps {
   preloadedDocument: Preloaded<typeof api.documents.getById>;
@@ -14,18 +15,20 @@ export const Document = ({ preloadedDocument }: DocumentProps) => {
   const document = usePreloadedQuery(preloadedDocument);
 
   return (
-    <Room>
-      <div className="min-h-screen flex-grow">
-        <div className="w-full mx-auto flex flex-col fixed top-0 z-10 print:hidden h-[112px]">
-          <Navbar data={document} />
+    <SavingStatusProvider>
+      <Room>
+        <div className="min-h-screen flex-grow">
+          <div className="w-full mx-auto flex flex-col fixed top-0 z-10 print:hidden h-[112px]">
+            <Navbar data={document} />
+          </div>
+          <div className="pt-[120px] print:pt-0">
+            <Editor
+              documentId={document._id}
+              initialContent={document.initialContent}
+            />
+          </div>
         </div>
-        <div className="pt-[120px] print:pt-0">
-          <Editor
-            documentId={document._id}
-            initialContent={document.initialContent}
-          />
-        </div>
-      </div>
-    </Room>
+      </Room>
+    </SavingStatusProvider>
   );
 };

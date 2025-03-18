@@ -152,7 +152,10 @@ export const updateById = mutation({
       throw new ConvexError("Unauthorized");
     }
 
-    return await ctx.db.patch(args.id, { title: args.title });
+    // Update the title
+    await ctx.db.patch(args.id, { title: args.title });
+
+    return document;
   },
 });
 
