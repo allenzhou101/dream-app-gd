@@ -38,7 +38,8 @@ export const create = mutation({
       title: title ?? "Untitled",
       ownerId: user.subject,
       organizationId,
-      content: initialContent
+      content: initialContent,
+      isArchived: false
     });
 
     const proseMirrorInitialContent = initialContent ? [{"type":"codeBlock","attrs":{"language":"javascript"},"content":[{"type":"text","text":"👋 Welcome to Dream!"}]}] : []
@@ -92,6 +93,7 @@ export const get = query({
     return await ctx.db
       .query("documents")
       .withIndex("by_owner_id", (q) => q.eq("ownerId", user.subject))
+      .filter((q) => q.eq(q.field("isArchived"), false))
       .paginate(paginationOpts);
   },
 });
@@ -121,7 +123,9 @@ export const removeById = mutation({
       throw new ConvexError("Unauthorized");
     }
 
-    return await ctx.db.delete(args.id);
+    return await ctx.db.patch(args.id, {
+      isArchived: true
+    });
   },
 });
 

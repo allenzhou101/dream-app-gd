@@ -78,9 +78,10 @@ export default function DocumentsSidebar() {
       await removeDocument({ id: documentId });
       toast.success("Document deleted");
       if (documentId === currentDocumentId) {
-        router.push("/");
+        router.replace("/");
       }
-    } catch {
+    } catch (error) {
+      console.error("Failed to delete document:", error);
       toast.error("Failed to delete document");
     }
   };
@@ -98,7 +99,7 @@ export default function DocumentsSidebar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuLabel>
-                {user.name || user.email || "My profile"}
+                {user?.name || user?.email || "My profile"}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem

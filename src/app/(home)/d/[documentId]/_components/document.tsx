@@ -4,7 +4,6 @@ import { Preloaded, usePreloadedQuery } from "convex/react";
 import { Editor } from "./editor";
 import { Navbar } from "./navbar";
 import { api } from "../../../../../../convex/_generated/api";
-
 interface DocumentProps {
   preloadedDocument: Preloaded<typeof api.documents.getById>;
 }
