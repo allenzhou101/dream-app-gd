@@ -16,11 +16,12 @@ export const {
   getSteps,
   submitSteps,
 } = prosemirrorSync.syncApi({
-  checkRead(ctx, id) {
-    // const user = await userFromAuth(ctx);
+  async checkRead(ctx, id) {
+    const user = await ctx.auth.getUserIdentity()
     // ...validate that the user can read this document
   },
-  checkWrite(ctx, id) {
+  async checkWrite(ctx, id) {
+    const user = await ctx.auth.getUserIdentity()
     // const user = await userFromAuth(ctx);
     // ...validate that the user can write to this document
   },
@@ -57,7 +58,6 @@ export const updateDocSearchIndex = internalMutation({
       .filter((q) => q.eq(q.field("_id"), id))
       // .withIndex("docId", (q) => q.eq("docId", id))
       .unique();
-    console.log("existing", existing, "id", id, "content", content);
     if (!existing) {
       // await ctx.db.insert("documents", { docId: id, content, title: "Untitled document", ownerId:  });
     } else {

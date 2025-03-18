@@ -281,8 +281,6 @@ const ImageButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
-  console.log(editor?.getAttributes("link").href, "TEST");
-
   const onChange = (src: string) => {
     editor?.chain().focus().setImage({ src }).run();
   };
@@ -362,8 +360,6 @@ const ImageButton = () => {
 const LinkButton = () => {
   const { editor } = useEditorStore();
   const [value, setValue] = useState("");
-
-  console.log(editor?.getAttributes("link").href, "TEST");
 
   const onChange = (href: string) => {
     editor?.chain().focus().extendMarkRange("link").setLink({ href }).run();

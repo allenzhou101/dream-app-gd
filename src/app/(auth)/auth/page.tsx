@@ -41,7 +41,6 @@ function Auth() {
         <Descope
           flowId="sign-up-or-in"
           onReady={() => {
-            console.log("Descope is ready");
             setIsReady(true);
           }}
           onSuccess={() => {

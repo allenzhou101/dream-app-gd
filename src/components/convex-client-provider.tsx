@@ -40,7 +40,6 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
 }
 
 function UseStoreUser({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useStoreUserEffect();
-  console.log(isAuthenticated);
+  const {} = useStoreUserEffect();
   return children;
 }

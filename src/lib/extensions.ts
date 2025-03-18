@@ -18,7 +18,6 @@ import { FontFamily } from "@tiptap/extension-font-family";
 import { Color } from "@tiptap/extension-color";
 // import { CharacterCount } from "@tiptap/extension-character-count";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import TextStyle from "@tiptap/extension-text-style";
 import ImageResize from "tiptap-extension-resize-image";
@@ -38,7 +37,6 @@ export const extensions = [
   TableHeader,
   TableRow,
   TaskList,
-  Image,
   ImageResize,
   Underline,
   FontFamily,
