@@ -1,6 +1,6 @@
 "use client";
 
-import { usePaginatedQuery } from "convex/react";
+import { useMutation, usePaginatedQuery } from "convex/react";
 import { useEffect } from "react";
 
 // import { Navbar } from "./navbar";
@@ -10,11 +10,14 @@ import { useEffect } from "react";
 import { api } from "../../../convex/_generated/api";
 import { useSearchParam } from "@/hooks/use-search-param";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const Home = () => {
   const router = useRouter();
 
   const [search] = useSearchParam();
+  const create = useMutation(api.documents.create);
 
   const { results, status } = usePaginatedQuery(
     api.documents.get,
@@ -35,7 +38,19 @@ const Home = () => {
   }
 
   // Return null since we're redirecting
-  return null;
+  return (
+    <>
+      <SidebarTrigger />
+      Create a document:
+      <Button
+        onClick={async () => {
+          await create({});
+        }}
+      >
+        Create
+      </Button>{" "}
+    </>
+  );
 
   // return (
   //   <div className="min-h-screen flex flex-col">
