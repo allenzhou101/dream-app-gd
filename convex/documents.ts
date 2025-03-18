@@ -38,7 +38,6 @@ export const create = mutation({
       title: title ?? "Untitled",
       ownerId: user.subject,
       organizationId,
-      initialContent,
       content: initialContent
     });
 
@@ -152,10 +151,7 @@ export const updateById = mutation({
       throw new ConvexError("Unauthorized");
     }
 
-    // Update the title
-    await ctx.db.patch(args.id, { title: args.title });
-
-    return document;
+    return await ctx.db.patch(args.id, { title: args.title });
   },
 });
 

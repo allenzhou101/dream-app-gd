@@ -3,7 +3,7 @@
 import { useEditor, AnyExtension, EditorContent } from "@tiptap/react";
 import { useEditorStore } from "@/store/use-editor-store";
 import { Ruler } from "./ruler";
-import { Threads } from "./threads";
+// import { Threads } from "./threads";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margins";
 import { useTiptapSync } from "@convex-dev/prosemirror-sync/tiptap";
 import { api } from "../../../../../../convex/_generated/api";
@@ -13,7 +13,6 @@ import { Id } from "../../../../../../convex/_generated/dataModel";
 import { extensions } from "@/lib/extensions";
 
 interface EditorProps {
-  initialContent?: string | undefined;
   documentId: Id<"documents">;
 }
 
@@ -75,7 +74,7 @@ function EditorBody({
       <Ruler documentId={documentId} />
       <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
         <EditorContent editor={editor} />
-        <Threads editor={editor} />
+        {/* <Threads editor={editor} /> */}
       </div>
     </div>
   );
