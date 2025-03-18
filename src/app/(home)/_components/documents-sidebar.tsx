@@ -14,14 +14,22 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { FileText, Plus, Loader2 } from "lucide-react";
+import { FileText, Plus, Loader2, LogOut, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { useDescope, useSession } from "@descope/nextjs-sdk/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function DocumentsSidebar() {
   const router = useRouter();
   const params = useParams();
   const currentDocumentId = params.documentId as string;
+  const { logout } = useDescope();
 
   const {
     results: documents,
@@ -43,11 +51,36 @@ export default function DocumentsSidebar() {
       .catch(() => toast.error("Failed to create document"));
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/auth");
+    } catch {
+      toast.error("Failed to logout");
+    }
+  };
+
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-border/50">
         <div className="flex items-center justify-between px-2">
-          <h2 className="text-lg font-semibold">Documents</h2>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center gap-1 cursor-pointer hover:text-accent-foreground">
+                <h2 className="text-lg font-semibold">Home</h2>
+                <ChevronDown className="h-4 w-4" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <SidebarTrigger />
         </div>
       </SidebarHeader>
