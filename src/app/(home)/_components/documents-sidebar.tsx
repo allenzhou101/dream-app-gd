@@ -14,22 +14,32 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { FileText, Plus, Loader2, LogOut, ChevronDown } from "lucide-react";
+import {
+  FileText,
+  Plus,
+  Loader2,
+  LogOut,
+  ChevronDown,
+  User,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
-import { useDescope, useSession } from "@descope/nextjs-sdk/client";
+import { useDescope, useUser } from "@descope/nextjs-sdk/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 
 export default function DocumentsSidebar() {
   const router = useRouter();
   const params = useParams();
   const currentDocumentId = params.documentId as string;
   const { logout } = useDescope();
+  const { user } = useUser();
 
   const {
     results: documents,
@@ -72,6 +82,10 @@ export default function DocumentsSidebar() {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
+              <DropdownMenuLabel>
+                {user.name || user.email || "My profile"}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={handleLogout}
                 className="cursor-pointer"
